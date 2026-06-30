@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'customer' });
+  const location = useLocation();
+  const preselectedRole = location.state?.role || 'customer';
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: preselectedRole });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
@@ -14,8 +16,9 @@ const Register = () => {
     setLoading(true);
     setError('');
     try {
-      await register(form.name, form.email, form.password, form.role);
-      navigate('/dashboard');
+      const user = await register(form.name, form.email, form.password, form.role);
+      if (user.role === 'admin') navigate('/manage-parcels');
+      else navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     }
