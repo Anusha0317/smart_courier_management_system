@@ -31,6 +31,9 @@ const TrackParcel = () => {
 
   return (
     <div style={{ maxWidth: '750px', margin: '40px auto' }}>
+      <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', color: '#2980b9', cursor: 'pointer', fontSize: '14px', marginBottom: '15px', padding: '0' }}>
+        ← Back
+      </button>
       <div className="card">
         <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>Track Your Parcel</h2>
         <p style={{ textAlign: 'center', color: '#666', marginBottom: '20px' }}>
