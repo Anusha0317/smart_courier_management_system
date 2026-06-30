@@ -3,14 +3,14 @@ const router = express.Router();
 const protect = require('../middleware/auth');
 const {
   createParcel, getParcels, getParcelByTracking,
-  updateParcelStatus, assignCourier, deleteParcel
+  updateParcelStatus, assignCourier, deleteParcel, updateEstimatedDelivery
 } = require('../controllers/parcelController');
-
 router.post('/', protect, createParcel);
 router.get('/', protect, getParcels);
 router.get('/track/:trackingNumber', getParcelByTracking);
 router.put('/:id/status', protect, updateParcelStatus);
 router.put('/:id/assign', protect, assignCourier);
+router.put('/:id/estimated-delivery', protect, updateEstimatedDelivery);
 router.delete('/:id', protect, deleteParcel);
 
 module.exports = router;
