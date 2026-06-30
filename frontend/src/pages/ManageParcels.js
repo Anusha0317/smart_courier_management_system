@@ -6,6 +6,8 @@ const ManageParcels = () => {
   const [couriers, setCouriers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
     fetchData();
@@ -36,6 +38,15 @@ const ManageParcels = () => {
     } catch (err) { console.error(err); }
   };
 
+  const updateEstimatedDelivery = async (id, date) => {
+    try {
+      await axios.put(`http://localhost:5000/api/parcels/${id}/estimated-delivery`, { estimatedDelivery: date });
+      setMessage('Estimated delivery date set!');
+      fetchData();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) { console.error(err); }
+  };
+
   const assignCourier = async (id, courierId) => {
     try {
       await axios.put(`http://localhost:5000/api/parcels/${id}/assign`, { courierId });
@@ -54,6 +65,13 @@ const ManageParcels = () => {
       setTimeout(() => setMessage(''), 3000);
     } catch (err) { console.error(err); }
   };
+
+  const filteredParcels = parcels.filter(p => {
+    const matchesSearch = p.trackingNumber.toLowerCase().includes(search.toLowerCase()) ||
+      p.recipient.name.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || p.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   if (loading) return <div style={{ textAlign: 'center', padding: '50px' }}>Loading...</div>;
 
@@ -84,6 +102,30 @@ const ManageParcels = () => {
         </div>
       </div>
 
+      <div className="card" style={{ marginBottom: '15px' }}>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <input
+            type="text"
+            placeholder="Search by tracking number or recipient name"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ flex: 1, minWidth: '220px', padding: '10px', border: '1px solid #ddd', borderRadius: '6px' }}
+          />
+          <select
+            value={statusFilter}
+            onChange={e => setStatusFilter(e.target.value)}
+            style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '6px' }}>
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="picked_up">Picked Up</option>
+            <option value="in_transit">In Transit</option>
+            <option value="out_for_delivery">Out for Delivery</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+
       <div className="card" style={{ overflowX: 'auto' }}>
         <table>
           <thead>
@@ -94,12 +136,13 @@ const ManageParcels = () => {
               <th>Parcel Info</th>
               <th>Status</th>
               <th>Update Status</th>
+              <th>Est. Delivery</th>
               <th>Assign Courier</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {parcels.map(p => (
+            {filteredParcels.map(p => (
               <tr key={p._id}>
                 <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{p.trackingNumber}</td>
                 <td>{p.sender?.name || 'N/A'}</td>
@@ -112,14 +155,6 @@ const ManageParcels = () => {
                 <td>
                   <span style={{ fontSize: '13px', fontWeight: '500' }}>{p.description}</span><br/>
                   <span style={{ fontSize: '12px', color: '#666' }}>{p.weight} kg</span>
-                  {p.estimatedDelivery && (
-                    <>
-                      <br/>
-                      <span style={{ fontSize: '12px', color: '#27ae60' }}>
-                        Est: {new Date(p.estimatedDelivery).toLocaleDateString()}
-                      </span>
-                    </>
-                  )}
                 </td>
                 <td><span className={`badge badge-${p.status}`}>{p.status.replace(/_/g, ' ')}</span></td>
                 <td>
@@ -134,6 +169,14 @@ const ManageParcels = () => {
                     <option value="delivered">Delivered</option>
                     <option value="cancelled">Cancelled</option>
                   </select>
+                </td>
+                <td>
+                  <input
+                    type="date"
+                    defaultValue={p.estimatedDelivery ? new Date(p.estimatedDelivery).toISOString().split('T')[0] : ''}
+                    onChange={e => updateEstimatedDelivery(p._id, e.target.value)}
+                    style={{ padding: '5px', borderRadius: '4px', fontSize: '12px', width: '130px' }}
+                  />
                 </td>
                 <td>
                   <select
@@ -158,8 +201,8 @@ const ManageParcels = () => {
             ))}
           </tbody>
         </table>
-        {parcels.length === 0 && (
-          <p style={{ textAlign: 'center', padding: '20px', color: '#666' }}>No parcels yet</p>
+        {filteredParcels.length === 0 && (
+          <p style={{ textAlign: 'center', padding: '20px', color: '#666' }}>No parcels found</p>
         )}
       </div>
     </div>
