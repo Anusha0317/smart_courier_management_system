@@ -59,6 +59,9 @@ const ManageParcels = () => {
 
   return (
     <div style={{ padding: '20px 0' }}>
+      <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', color: '#2980b9', cursor: 'pointer', fontSize: '14px', marginBottom: '15px', padding: '0' }}>
+        ← Back
+      </button>
       <h2 style={{ marginBottom: '20px' }}>Manage All Parcels</h2>
       {message && <div className="alert alert-success">{message}</div>}
 
