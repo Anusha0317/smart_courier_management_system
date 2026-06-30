@@ -38,6 +38,9 @@ const Dashboard = () => {
   if (user.role === 'courier') {
     return (
       <div style={{ padding: '20px 0' }}>
+        <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', color: '#2980b9', cursor: 'pointer', fontSize: '14px', marginBottom: '15px', padding: '0' }}>
+          ← Back
+        </button>
         <h2 style={{ marginBottom: '20px' }}>My Deliveries — {user.name}</h2>
         {message && <div className="alert alert-success">{message}</div>}
 
@@ -124,6 +127,9 @@ const Dashboard = () => {
 
   return (
     <div style={{ padding: '20px 0' }}>
+      <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', color: '#2980b9', cursor: 'pointer', fontSize: '14px', marginBottom: '15px', padding: '0' }}>
+        ← Back
+      </button>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h2>Welcome, {user.name} ({user.role})</h2>
         {(user.role === 'customer' || user.role === 'admin') && (
@@ -160,6 +166,7 @@ const Dashboard = () => {
               <tr>
                 <th>Tracking No.</th>
                 <th>Recipient</th>
+                <th>Description</th>
                 <th>Status</th>
                 <th>Weight</th>
               </tr>
@@ -169,6 +176,7 @@ const Dashboard = () => {
                 <tr key={p._id}>
                   <td style={{ fontFamily: 'monospace' }}>{p.trackingNumber}</td>
                   <td>{p.recipient.name}</td>
+                  <td>{p.description}</td>
                   <td><span className={`badge badge-${p.status}`}>{p.status.replace(/_/g, ' ')}</span></td>
                   <td>{p.weight} kg</td>
                 </tr>
