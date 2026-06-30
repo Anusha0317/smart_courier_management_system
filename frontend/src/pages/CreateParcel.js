@@ -30,6 +30,9 @@ const CreateParcel = () => {
 
   return (
     <div style={{ maxWidth: '600px', margin: '30px auto' }}>
+      <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', color: '#2980b9', cursor: 'pointer', fontSize: '14px', marginBottom: '15px', padding: '0' }}>
+        ← Back
+      </button>
       <div className="card">
         <h2 style={{ marginBottom: '20px' }}>Send a Parcel</h2>
         {error && <div className="alert alert-error">{error}</div>}
