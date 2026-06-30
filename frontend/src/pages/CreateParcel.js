@@ -6,8 +6,7 @@ const CreateParcel = () => {
   const [form, setForm] = useState({
     recipient: { name: '', email: '', address: '', phone: '' },
     description: '',
-    weight: '',
-    estimatedDelivery: ''
+    weight: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -101,14 +100,6 @@ const CreateParcel = () => {
               placeholder="Weight in kg"
               min="0.1"
               step="0.1"
-            />
-          </div>
-          <div className="form-group">
-            <label>Estimated Delivery Date</label>
-            <input
-              type="date"
-              value={form.estimatedDelivery}
-              onChange={e => setForm({...form, estimatedDelivery: e.target.value})}
             />
           </div>
           <button
