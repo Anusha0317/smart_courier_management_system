@@ -57,5 +57,13 @@ const deleteParcel = async (req, res) => {
     res.json({ message: 'Parcel removed' });
   } catch (error) { res.status(500).json({ message: error.message }); }
 };
+const updateEstimatedDelivery = async (req, res) => {
+  try {
+    const parcel = await Parcel.findByIdAndUpdate(
+      req.params.id, { estimatedDelivery: req.body.estimatedDelivery }, { new: true }
+    );
+    res.json(parcel);
+  } catch (error) { res.status(500).json({ message: error.message }); }
+};
 
-module.exports = { createParcel, getParcels, getParcelByTracking, updateParcelStatus, assignCourier, deleteParcel };
+module.exports = { createParcel, getParcels, getParcelByTracking, updateParcelStatus, assignCourier, deleteParcel, updateEstimatedDelivery };
